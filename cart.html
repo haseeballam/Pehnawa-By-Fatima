@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Your shopping bag at Pehnawa By Fatima. Review your selected items and proceed to checkout.">
+  <meta name="keywords" content="shopping bag, cart, pehnawa by fatima">
+  <meta name="author" content="Pehnawa By Fatima">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://haseeballam.github.io/pehnawa-by-fatima/cart.html">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://haseeballam.github.io/pehnawa-by-fatima/cart.html">
+  <meta property="og:title" content="Shopping Bag - Pehnawa By Fatima">
+  <meta property="og:description" content="Your shopping bag at Pehnawa By Fatima. Review your selected items and proceed to checkout.">
+  <meta property="og:image" content="https://haseeballam.github.io/pehnawa-by-fatima/images/banner1.jpg">
+  <meta property="og:site_name" content="Pehnawa By Fatima">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Shopping Bag - Pehnawa By Fatima">
+  <meta name="twitter:description" content="Your shopping bag at Pehnawa By Fatima. Review your selected items and proceed to checkout.">
+  <meta name="twitter:image" content="https://haseeballam.github.io/pehnawa-by-fatima/images/banner1.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#000000">
+  <title>Shopping Bag - Pehnawa By Fatima</title>
+  <link rel="canonical" href="cart.html">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .cart-page { max-width: 1200px; margin: 40px auto; padding: 0 48px; }
+    .cart-page-title { text-align: center; font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
+    .alert-box { background: #ffebee; color: #c62828; padding: 12px 20px; margin-bottom: 20px; display: none; justify-content: space-between; align-items: center; font-size: 14px; }
+    .cart-table { width: 100%; border-collapse: collapse; }
+    .cart-table th { text-align: left; padding: 12px 0; border-bottom: 1px solid #ddd; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .cart-table td { padding: 20px 0; border-bottom: 1px solid #eee; vertical-align: top; }
+    .cart-product-info { display: flex; gap: 15px; }
+    .cart-product-info img { width: 80px; height: 100px; object-fit: cover; background: #f5f5f5; }
+    .cart-product-details h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .cart-product-details .meta { font-size: 12px; color: #666; margin: 3px 0; }
+    .cart-delete { cursor: pointer; font-size: 18px; margin-top: 8px; display: inline-block; }
+    .stock-in { font-size: 12px; color: #2e7d32; margin-top: 5px; }
+    .cart-price { color: #000; font-weight: 600; font-size: 13px; }
+    .cart-qty-control { display: flex; align-items: center; gap: 12px; }
+    .cart-qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .cart-qty-btn:hover { background: #333; }
+    .cart-summary { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+    .order-note { flex: 1; }
+    .order-note p { font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .order-note textarea { width: 100%; max-width: 400px; height: 100px; padding: 10px; border: 1px solid #ddd; font-family: 'Poppins', sans-serif; font-size: 13px; resize: none; outline: none; }
+    .order-note textarea:focus { border-color: #000; }
+    .cart-totals { text-align: right; }
+    .cart-saving { color: #d32f2f; font-weight: 700; margin-bottom: 10px; font-size: 13px; }
+    .cart-subtotal { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .cart-checkout-btn { background: #000; color: #fff; padding: 14px 40px; border: none; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: background 0.2s; }
+    .cart-checkout-btn:hover { background: #333; }
+    .empty-cart-page { text-align: center; padding: 80px 20px; }
+    .empty-cart-page h2 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
+    .empty-cart-page p { color: #666; font-size: 14px; }
+    .empty-cart-page button { padding: 12px 30px; background: #000; color: #fff; border: none; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; font-size: 13px; margin-top: 20px; letter-spacing: 1px; text-transform: uppercase; }
+
+    @media(max-width: 768px) {
+      .cart-page { padding: 0 20px; margin: 24px auto; }
+      .cart-page-title { font-size: 18px; }
+      .cart-table th:nth-child(3), .cart-table td:nth-child(3) { display: none; }
+      .cart-summary { flex-direction: column; }
+      .order-note textarea { max-width: 100%; }
+      .cart-totals { text-align: left; width: 100%; }
+    }
+    @media(max-width: 480px) {
+      .cart-page { padding: 0 14px; margin: 16px auto; }
+      .cart-page-title { font-size: 16px; }
+      .cart-product-info img { width: 65px; height: 85px; }
+      .cart-product-details h4 { font-size: 12px; }
+      .cart-table th:nth-child(2), .cart-table td:nth-child(2),
+      .cart-table th:nth-child(3), .cart-table td:nth-child(3) { display: none; }
+      .cart-subtotal { font-size: 15px; }
+      .cart-checkout-btn { width: 100%; padding: 14px; }
+    }
+  </style>
+</head>
+<body class="inner-page">
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <p>Customer Care Update: Please use this contact number temporarily for all customer care inquiries <span><a href="https://wa.me/923114034412?text=Hello%20Pehnawa%20By%20Fatima" target="_blank">Shop Now</a></span></p>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="menu-icon" id="menu-icon">☰</div>
+      <div class="logo-area">
+        <div class="logo"><a href="index.html">PEHNAWA BY FATIMA</a></div>
+        <div class="sub-categories">
+          <a href="unstitched.html">UNSTITCHED</a>
+          <span>|</span>
+          <a href="stitched.html">STITCHED</a>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="search-icon" id="search-toggle">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </div>
+      <div class="cart-icon" id="cart-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-count"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Drawer -->
+  <div class="search-drawer" id="search-drawer">
+    <div class="search-header">
+      <h3>Search Products</h3>
+      <span class="close-search" id="close-search">×</span>
+    </div>
+    <div class="search-wrapper">
+      <input type="text" id="search-input" placeholder="Search products...">
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <span class="close-cart" id="close-cart">×</span>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <p class="empty-cart">Your cart is empty</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cart-total">Rs. 0</span>
+      </div>
+      <button class="checkout-btn">Checkout</button>
+    </div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Cart Page Content -->
+  <div class="cart-page">
+    <h1 class="cart-page-title">Shopping Bag</h1>
+    <div id="alert-box" class="alert-box">
+      <span>Please remove Out of Stock product(s) to continue checkout.</span>
+      <span style="cursor:pointer;" onclick="this.parentElement.style.display='none'">×</span>
+    </div>
+    <div id="cart-content"></div>
+  </div>
+
+  <script src="js/script.js"></script>
+  <script>
+    let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function renderCartPage() {
+      const cartContent = document.getElementById('cart-content');
+      if (cartData.length === 0) {
+        cartContent.innerHTML = `
+          <div class="empty-cart-page">
+            <h2>Your cart is empty</h2>
+            <p>Add some products to get started!</p>
+            <button onclick="window.location.href='index.html'">CONTINUE SHOPPING</button>
+          </div>`;
+        return;
+      }
+
+      let totalItems = 0, subtotal = 0, itemsHTML = '';
+      cartData.forEach((item, index) => {
+        totalItems += item.qty;
+        subtotal += item.price * item.qty;
+        itemsHTML += `
+          <tr>
+            <td>
+              <div class="cart-product-info">
+                <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/80x100?text=No+Image'">
+                <div class="cart-product-details">
+                  <h4>${item.name}</h4>
+                  <div class="meta"><strong>Size:</strong> ${item.size}</div>
+                  <span class="cart-delete" onclick="removeCartItem(${index})">🗑️</span>
+                  <div class="stock-in">In Stock</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="cart-price">Rs. ${item.price.toLocaleString()}</span></td>
+            <td>
+              <div class="cart-qty-control">
+                <button class="cart-qty-btn" onclick="changeCartQtyWithValidation(${index}, -1)">−</button>
+                <span>${item.qty}</span>
+                <button class="cart-qty-btn" onclick="changeCartQtyWithValidation(${index}, 1)">+</button>
+              </div>
+            </td>
+            <td><strong>Rs. ${(item.price * item.qty).toLocaleString()}</strong></td>
+          </tr>`;
+      });
+
+      cartContent.innerHTML = `
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>PRODUCT (${totalItems})</th>
+              <th>PRICE</th>
+              <th>QUANTITY</th>
+              <th>TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>${itemsHTML}</tbody>
+        </table>
+        <div class="cart-summary">
+          <div class="order-note">
+            <p>Add Order Note</p>
+            <textarea placeholder="How can we help you?"></textarea>
+          </div>
+          <div class="cart-totals">
+            <div class="cart-saving">YOU'RE SAVING RS. 0</div>
+            <div class="cart-subtotal">SUBTOTAL: RS. ${subtotal.toLocaleString()}</div>
+            <button class="cart-checkout-btn" onclick="window.location.href='checkout.html'">CHECKOUT</button>
+          </div>
+        </div>`;
+    }
+
+    function changeCartQty(index, change) {
+      cartData[index].qty += change;
+      if (cartData[index].qty <= 0) cartData.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cartData));
+      cartData = JSON.parse(localStorage.getItem('cart')) || [];
+      renderCartPage();
+    }
+
+    // Validate cart stock when page loads or cart is viewed
+    async function validateCartStockOnPage() {
+      const stockMap = await fetchStockFromSheet();
+      if (!stockMap) return;
+      
+      const alertBox = document.getElementById('alert-box');
+      let hasOutOfStock = false;
+      
+      cartData.forEach((item, index) => {
+        const availableStock = stockMap[item.id] ?? 99;
+        if (availableStock <= 0) {
+          hasOutOfStock = true;
+          cartData.splice(index, 1);
+        } else if (item.qty > availableStock) {
+          hasOutOfStock = true;
+          cartData[index].qty = availableStock;
+        }
+      });
+      
+      if (hasOutOfStock) {
+        localStorage.setItem('cart', JSON.stringify(cartData));
+        if (alertBox) alertBox.style.display = 'flex';
+        renderCartPage();
+      }
+    }
+    
+    // Make changeCartQty async to check stock before increasing
+    async function changeCartQtyWithValidation(index, change) {
+      if (change > 0) {
+        const stockMap = await fetchStockFromSheet();
+        if (stockMap) {
+          const productId = cartData[index].id;
+          const availableStock = stockMap[productId] ?? 99;
+          
+          if (cartData[index].qty >= availableStock) {
+            showNotification(`Only ${availableStock} pieces available!`);
+            return;
+          }
+        }
+      }
+      changeCartQty(index, change);
+    }
+
+    function removeCartItem(index) {    // Validate stock when page loads
+    validateCartStockOnPage();      cartData.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cartData));
+      cartData = JSON.parse(localStorage.getItem('cart')) || [];
+      renderCartPage();
+    }
+
+    renderCartPage();
+  </script>
+
+  <!-- Menu Drawer -->
+  <div class="menu-drawer" id="menu-drawer">
+    <div class="menu-header">
+      <div class="menu-logo">Pehnawa By Fatima</div>
+      <div class="close-menu" id="close-menu">×</div>
+    </div>
+    <nav class="menu-nav">
+      <a href="unstitched.html">UNSTITCHED</a>
+      <a href="stitched.html">STITCHED</a>
+      <a href="#">3PC</a>
+      <a href="#">2PC</a>
+      <a href="#">EMBROIDERED</a>
+      <a href="#">PRINTED</a>
+      <a href="#">LAWN</a>
+      <a href="#">KHADDAR</a>
+    </nav>
+  </div>
+  <div class="menu-overlay" id="menu-overlay"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3 class="footer-logo">Pehnawa By Fatima</h3>
+        <p class="footer-tagline">Premium quality unstitched & stitched wear for modern women.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/pehnawabyfatima" target="_blank" class="social-icon instagram">
+  <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+</a>
+          <a href="https://facebook.com/pehnawabyfatima" target="_blank" class="social-icon facebook">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://tiktok.com/@pehnawabyfatima" target="_blank" class="social-icon tiktok">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          </a>
+          <a href="https://wa.me/923114034412" target="_blank" class="social-icon whatsapp">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="unstitched.html">Unstitched</a></li>
+          <li><a href="stitched.html">Stitched</a></li>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Sale</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Customer Care</h4>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Return & Exchange</a></li>
+          <li><a href="#">Size Guide</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <ul class="contact-info">
+          <li>📍 Lahore, Pakistan</li>
+          <li>📞 +92 311 4034412</li>
+          <li>✉️ pehnawabyfatima.official@gmail.com</li>
+          <li>⏰ Mon - Sat: 10AM - 8PM</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Pehnawa By Fatima. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float Button -->
+  <a href="https://wa.me/923114034412?text=Hello%20Pehnawa%20By%20Fatima%2C%20I%20need%20help!" class="whatsapp-float" target="_blank">
+    <svg width="28" height="28" fill="white" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+</body>
+</html>

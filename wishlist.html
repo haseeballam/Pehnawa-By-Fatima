@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>My Wishlist - Pehnawa By Fatima</title>
+  <link rel="canonical" href="wishlist.html">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="inner-page">
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <p>Customer Care Update: Please use this contact number temporarily for all customer care inquiries <span><a href="https://wa.me/923114034412?text=Hello%20Pehnawa%20By%20Fatima" target="_blank">Shop Now</a></span></p>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="menu-icon" id="menu-icon">☰</div>
+      <div class="logo-area">
+        <div class="logo"><a href="index.html">Pehnawa By Fatima</a></div>
+        <div class="sub-categories">
+          <a href="unstitched.html">UNSTITCHED</a>
+          <span>|</span>
+          <a href="stitched.html">STITCHED</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="search-icon" id="search-toggle">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </div>
+      <div class="cart-icon" id="cart-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-count"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Drawer -->
+  <div class="search-drawer" id="search-drawer">
+    <div class="search-header">
+      <h3>Search Products</h3>
+      <span class="close-search" id="close-search">×</span>
+    </div>
+    <div class="search-wrapper">
+      <input type="text" id="search-input" placeholder="Search products...">
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <span class="close-cart" id="close-cart">×</span>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <p class="empty-cart">Your cart is empty</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cart-total">Rs. 0</span>
+      </div>
+      <button class="checkout-btn">Checkout</button>
+    </div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="collection-toolbar">
+      <div class="collection-title">
+        <h1 class="page-title">MY WISHLIST</h1>
+        <span class="product-count"></span>
+      </div>
+    </div>
+
+    <!-- Wishlist Grid -->
+    <div class="product-grid" data-grid-cols="3" id="wishlist-grid">
+      <!-- Wishlist items will be loaded here by JS -->
+    </div>
+
+    <!-- Empty Wishlist Message -->
+    <div id="empty-wishlist" style="display:none; text-align:center; padding:60px 20px;">
+      <h2 style="color:#666; font-size:24px; margin-bottom:20px;">Your wishlist is empty</h2>
+      <p style="color:#999; font-size:16px; margin-bottom:30px;">Start adding your favorite items to your wishlist!</p>
+      <a href="unstitched.html" style="display:inline-block; padding:12px 30px; background:#000; color:#fff; text-decoration:none; font-weight:600; border-radius:4px; margin-right:10px;">UNSTITCHED COLLECTION</a>
+      <a href="stitched.html" style="display:inline-block; padding:12px 30px; background:#000; color:#fff; text-decoration:none; font-weight:600; border-radius:4px;">STITCHED COLLECTION</a>
+    </div>
+  </div>
+
+  <!-- Menu Drawer -->
+  <div class="menu-drawer" id="menu-drawer">
+    <button class="close-menu">&times;</button>
+    <nav class="menu-items">
+      <a href="index.html">HOME</a>
+      <a href="unstitched.html">UNSTITCHED</a>
+      <a href="stitched.html">STITCHED</a>
+      <a href="wishlist.html" class="active">WISHLIST</a>
+    </nav>
+  </div>
+
+  <script src="js/script.js"></script>
+  <script>
+    // Load wishlist on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadWishlist();
+    });
+
+    function loadWishlist() {
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const wishlistGrid = document.getElementById('wishlist-grid');
+      const emptyMessage = document.getElementById('empty-wishlist');
+      const productCount = document.querySelector('.product-count');
+
+      if (wishlist.length === 0) {
+        wishlistGrid.innerHTML = '';
+        emptyMessage.style.display = 'block';
+        if (productCount) productCount.textContent = '';
+        updateWishlistCount();
+        return;
+      }
+
+      emptyMessage.style.display = 'none';
+      if (productCount) productCount.textContent = `${wishlist.length} items`;
+
+      wishlistGrid.innerHTML = wishlist.map(item => `
+        <div class="home-product" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image}">
+          <div class="product-image-wrapper">
+            <a href="product.html?id=${item.id}">
+              <img src="${item.image}" alt="${item.name}">
+            </a>
+            <div class="hover-actions">
+              <button class="quick-add-btn add-to-bag">ADD TO BAG</button>
+              <button class="wishlist-btn active" onclick="removeFromWishlist(${item.id}, this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="product-info">
+            <h3>${item.name}</h3>
+            <div class="price">Rs. ${item.price.toLocaleString()}</div>
+          </div>
+        </div>
+      `).join('');
+      
+      updateWishlistCount();
+      highlightWishlistItems(); // Mark hearts as active for items in wishlist
+    }
+
+    function removeFromWishlist(productId, btn) {
+      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      wishlist = wishlist.filter(item => item.id !== productId);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateWishlistCount();
+      
+      // Remove the card and reload
+      btn.closest('.home-product').remove();
+      loadWishlist();
+      showNotification('Removed from wishlist! 💔');
+    }
+
+    function showNotification(msg) {
+      const old = document.querySelector('.notification');
+      if (old) old.remove();
+      
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.textContent = msg;
+      notif.style.cssText = 'position:fixed;top:20px;right:20px;background:#000;color:#fff;padding:15px 25px;border-radius:4px;z-index:9999;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+      document.body.appendChild(notif);
+      
+      setTimeout(() => notif.remove(), 2000);
+    }
+
+    function updateWishlistCount() {
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const wishlistCountEl = document.getElementById('wishlist-count');
+
+      if (wishlistCountEl) {
+        if (wishlist.length > 0) {
+          wishlistCountEl.innerText = wishlist.length;
+          wishlistCountEl.style.display = 'flex';
+        } else {
+          wishlistCountEl.innerText = '0';
+          wishlistCountEl.style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

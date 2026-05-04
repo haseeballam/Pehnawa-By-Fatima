@@ -1263,7 +1263,7 @@ setInterval(async () => {
 }, 60 * 1000);
 
 // ===== MENU DRAWER - SIMPLE VERSION =====
-document.addEventListener('DOMContentLoaded', function() {
+{
 
   const menuIcon = document.getElementById('menu-icon');
   const menuDrawer = document.getElementById('menu-drawer');
@@ -1272,7 +1272,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log('Menu Icon:', menuIcon); // Check karne ke liye
 
-  if (menuIcon) {
+  if (menuIcon && menuDrawer && menuOverlay) {
     menuIcon.addEventListener('click', function() {
       console.log('Menu clicked!'); // Ye console mein dikhega
       menuDrawer.classList.add('active');
@@ -1281,7 +1281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  if (closeMenu) {
+  if (closeMenu && menuDrawer && menuOverlay) {
     closeMenu.addEventListener('click', function() {
       menuDrawer.classList.remove('active');
       menuOverlay.classList.remove('active');
@@ -1289,7 +1289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  if (menuOverlay) {
+  if (menuOverlay && menuDrawer) {
     menuOverlay.addEventListener('click', function() {
       menuDrawer.classList.remove('active');
       menuOverlay.classList.remove('active');
@@ -1297,9 +1297,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-});
+}
 // ===== FILTER & SORT =====
-document.addEventListener('DOMContentLoaded', function() {
+{
 
   const filterToggle = document.getElementById('filter-toggle');
   const filterDrawer = document.getElementById('filter-drawer');
@@ -1308,7 +1308,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const filterChecks = document.querySelectorAll('.filter-check');
   const clearFilters = document.getElementById('clear-filters');
   const sortSelect = document.getElementById('sort-select');
-  const products = document.querySelectorAll('.home-product');
+  function getFilterableProducts() {
+    return Array.from(document.querySelectorAll('.product-grid .home-product, .product-grid .product'));
+  }
 
   // Open/Close Filter
   if (filterToggle) {
@@ -1342,6 +1344,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    const products = getFilterableProducts();
     products.forEach(product => {
       let show = true;
 
@@ -1382,6 +1385,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (clearFilters) {
     clearFilters.addEventListener('click', function() {
       filterChecks.forEach(check => check.checked = false);
+      const products = getFilterableProducts();
       products.forEach(product => product.style.display = 'block');
     });
   }
@@ -1391,7 +1395,8 @@ document.addEventListener('DOMContentLoaded', function() {
     sortSelect.addEventListener('change', function() {
       const sortBy = this.value;
       const productGrid = document.querySelector('.product-grid');
-      const productArray = Array.from(products);
+      if (!productGrid) return;
+      const productArray = getFilterableProducts();
 
       productArray.sort((a, b) => {
         if (sortBy === 'price-low') {
@@ -1405,12 +1410,13 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       productArray.forEach(product => productGrid.appendChild(product));
+      applyFilters();
     });
 	
   }
  
 
-});
+}
 });
 // ===== HIGHLIGHT WISHLIST ITEMS ON PAGE LOAD =====
 function highlightWishlistItems() {

@@ -295,9 +295,11 @@ const productsDB = [
 let sheetProducts = [];
 let sheetProductsLoaded = false;
 let productsRefreshInFlight = false;
+let lastAggressiveProductsSyncAt = 0;
 const PRODUCTS_CACHE_KEY = 'pehnawa_products_cache';
 const PRODUCTS_CACHE_TIME_KEY = 'pehnawa_products_cache_time';
 const PRODUCTS_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const AGGRESSIVE_SYNC_COOLDOWN = 15000; // avoid too many force sync calls
 
 function normalizeSheetProduct(p) {
   return {
@@ -316,7 +318,41 @@ function setProductStockMap(products) {
   stockCacheData = sm;
 }
 
-async function refreshProductsFromSheetInBackground() {
+function normalizeProductType(type) {
+  return (type || '').toLowerCase().replace(/[\s-]/g, '');
+}
+
+function isUnstitchedType(type) {
+  const t = normalizeProductType(type);
+  return t === '' || t.includes('unstitched') || t.includes('unstiched') || t.includes('unstitch');
+}
+
+function isStitchedType(type) {
+  const t = normalizeProductType(type);
+  return !isUnstitchedType(type) && (t.includes('stitched') || t.includes('stiched') || t.includes('stitch'));
+}
+
+function renderDynamicCollectionGrids(products) {
+  const unstitchedGrid = document.getElementById('unstitched-grid');
+  const stitchedGrid = document.getElementById('stitched-grid');
+  if (!unstitchedGrid && !stitchedGrid) return;
+
+  if (unstitchedGrid) {
+    const list = products.filter(p => isUnstitchedType(p.productType));
+    unstitchedGrid.innerHTML = list.length ?
+      list.map(p => renderProductCard(p)).join('') :
+      '<p style="padding:40px;text-align:center;grid-column:1/-1;">No products found.</p>';
+  }
+
+  if (stitchedGrid) {
+    const list = products.filter(p => isStitchedType(p.productType));
+    stitchedGrid.innerHTML = list.length ?
+      list.map(p => renderProductCard(p)).join('') :
+      '<p style="padding:40px;text-align:center;grid-column:1/-1;">No products found.</p>';
+  }
+}
+
+async function refreshProductsFromSheetInBackground(onUpdated) {
   if (productsRefreshInFlight) return;
   productsRefreshInFlight = true;
 
@@ -330,14 +366,33 @@ async function refreshProductsFromSheetInBackground() {
     const data = await res.json();
     if (data.success && data.products && data.products.length > 0) {
       const normalized = data.products.map(normalizeSheetProduct);
+      const changed = JSON.stringify(normalized) !== JSON.stringify(sheetProducts);
+      sheetProducts = normalized;
+      sheetProductsLoaded = true;
+      setProductStockMap(sheetProducts);
       localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(normalized));
       localStorage.setItem(PRODUCTS_CACHE_TIME_KEY, Date.now().toString());
+      if (changed && typeof onUpdated === 'function') {
+        onUpdated(normalized);
+      }
     }
   } catch (e) {
     // Silent fail: cached data is already shown to user.
   } finally {
     productsRefreshInFlight = false;
   }
+}
+
+async function aggressiveSyncProductsNow() {
+  const now = Date.now();
+  if ((now - lastAggressiveProductsSyncAt) < AGGRESSIVE_SYNC_COOLDOWN) return;
+  lastAggressiveProductsSyncAt = now;
+
+  await refreshProductsFromSheetInBackground((latestProducts) => {
+    renderDynamicCollectionGrids(latestProducts);
+    applyStockToCards();
+    highlightWishlistItems();
+  });
 }
 
 async function loadProductsFromSheet() {
@@ -502,8 +557,7 @@ async function loadProductPage() {
   }
 
   window.currentProductId = productId;
-  const pt = (product.productType || '').toLowerCase();
-  const isStitched = pt === 'stitched' || pt === 'stiched';
+  const isStitched = isStitchedType(product.productType);
   const navS = document.getElementById('nav-stitched');
   const navU = document.getElementById('nav-unstitched');
   // Remove active-link from both first
@@ -591,26 +645,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   if (unstitchedGrid || stitchedGrid) {
     const products = await loadProductsFromSheet();
-
-    if (unstitchedGrid) {
-      const list = products.filter(p => {
-        const pt = (p.productType || '').toLowerCase().trim();
-        return pt.includes('unstitch') || pt === '';
-      });
-      unstitchedGrid.innerHTML = list.length ?
-        list.map(p => renderProductCard(p)).join('') :
-        '<p style="padding:40px;text-align:center;grid-column:1/-1;">No products found.</p>';
-    }
-
-    if (stitchedGrid) {
-      const list = products.filter(p => {
-        const pt = (p.productType || '').toLowerCase().trim();
-        return pt.includes('stitch') && !pt.includes('unstitch');
-      });
-      stitchedGrid.innerHTML = list.length ?
-        list.map(p => renderProductCard(p)).join('') :
-        '<p style="padding:40px;text-align:center;grid-column:1/-1;">No products found.</p>';
-    }
+    renderDynamicCollectionGrids(products);
+    refreshProductsFromSheetInBackground((latestProducts) => {
+      renderDynamicCollectionGrids(latestProducts);
+      applyStockToCards();
+      highlightWishlistItems();
+    });
   }
 
   // ===== 0. GRID TOGGLE - NEW FEATURE ===== //
@@ -1211,6 +1251,16 @@ document.addEventListener('click', async function(e) {
     }
   }
 });
+
+// Aggressive sync on focus: reflect latest sheet changes quickly.
+window.addEventListener('focus', async () => {
+  await aggressiveSyncProductsNow();
+});
+
+// Keep catalog pages fresh while user is browsing.
+setInterval(async () => {
+  await aggressiveSyncProductsNow();
+}, 60 * 1000);
 
 // ===== MENU DRAWER - SIMPLE VERSION =====
 document.addEventListener('DOMContentLoaded', function() {
